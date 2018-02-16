@@ -2,9 +2,9 @@
 #include <stdlib.h>
 
 void fill_vector(float *V, int len){
-  float aux = 2.0;
+  float aux = 5.0;
   for (int i = 0; i < len; i++) {
-    V[i] = (float)rand() / (float)(RAND_MAX / aux);
+    V[i] = ((float)rand() / (float)(RAND_MAX)) * aux ;
   }
 }
 
@@ -23,7 +23,7 @@ void add(float *vector_a, float *vector_b, float *result, int len){
 
 
 void save(float *V, int len){
-  FILE *f = fopen("result.csv", "r+");
+  FILE *f = fopen("result_add_vector.csv", "a");
 
   if (f == NULL){
     printf("File error\n");
@@ -38,6 +38,8 @@ void save(float *V, int len){
       fprintf(f, "%.2f, ", V[i]);
     }
   }
+  fprintf(f, "\n");
+  fprintf(f, "\n");
   fclose(f);
 }
 
@@ -45,16 +47,23 @@ void save(float *V, int len){
 int main(){
   int len;
 
-  printf("Digite el tamano del vector: \n");
+  printf("Digite la longitud de los vectores: \n");
   scanf("%d", &len);
 
+  //Memoria para los vectores
   float *vector_a = (float*)malloc(len * sizeof(float));
   float *vector_b = (float*)malloc(len * sizeof(float));
   float *result = (float*)malloc(len * sizeof(float));
 
+  //Generando vectores aleatorios
   fill_vector(vector_a, len);
   fill_vector(vector_b, len);
+
+  //Realizando la suma
   add(vector_a, vector_b, result, len);
+  
+
+  //Almacenando en el archivo
   save(vector_a, len);
   save(vector_b, len);
   save(result, len);
