@@ -39,7 +39,6 @@ void save(float *V, int len){
     }
   }
   fprintf(f, "\n");
-  fprintf(f, "\n");
   fclose(f);
 }
 
