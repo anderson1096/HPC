@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 
+#define CHUNKSIZE 10
 #define N 1200
 
 
@@ -24,23 +26,35 @@ void print(float *M, int row, int col){
   printf("\n");
 }
 
+
 void multiply(float *matrix_a, float *matrix_b, float *result, int col_a, int col_b, int row_a, int row_b){
 
-  int counter;
+  int counter, i, j , k, chunk = CHUNKSIZE, nthreads, tid;
 
   if (col_a != row_b){
     printf("Imposible multiplicar estas matrices\n");
     exit(-1);
   }
 
-  for (int i = 0; i < col_a; ++i){
-    for (int j = 0; j < row_b; ++j){
-      counter = 0;
-      for (int k = 0; k < row_b; ++k){
-        counter += matrix_a[i * col_a + k] * matrix_b[k * col_b + j];
-      }
-      result[i * col_b + j] = counter;
+  #pragma omp parallel shared(matrix_a, matrix_b, result, chunk, nthreads) private(i, j , k, tid) 
+  {  
+    tid = omp_get_thread_num();
+    if(tid == 0){
+      nthreads = omp_get_num_threads();
+      printf("Numero de hilos: %d\n", nthreads);
     }
+    printf("Hilo %d iniciando..\n", tid);
+    #pragma omp for schedule(dynamic, chunk) 
+      for (i = 0; i < col_a; ++i){
+        for (j = 0; j < row_b; ++j){
+          counter = 0;
+          for (k = 0; k < row_b; ++k){
+            counter += matrix_a[i * col_a + k] * matrix_b[k * col_b + j];
+          }
+          result[i * col_b + j] = counter;
+          //printf("Hilo %d: c[%d] = %d\n", tid, i * col_b + j, counter);
+        }
+      }
   }
 }
 
@@ -85,15 +99,15 @@ int main() {
 
   printf("Digite el numero de columnas matriz B: \n");
   scanf("%d", &col_B);
-  */
-
+*/
+  
   float *mat_A = (float*)malloc(row_A * col_A * sizeof(float));
   float *mat_B = (float*)malloc(row_B * col_B * sizeof(float));
   float *result = (float*)malloc(row_A * col_B * sizeof(float));
   
   fill_matrix(mat_A, row_A, col_A);
   fill_matrix(mat_B, row_B, col_B);
-
+  
   start = clock();
   multiply(mat_A, mat_B, result, col_A, col_B, row_A, row_B);
 
@@ -102,8 +116,9 @@ int main() {
   print(mat_B, row_B, col_B);
   print(result, row_A, col_B);
   */
+
   end = clock();
-  printf("Tiempo sin OMP: %.6f\n", (double)(end - start)/CLOCKS_PER_SEC);
+  printf("Tiempo con OMP: %.6f\n", (double)(end - start)/CLOCKS_PER_SEC);
   save(mat_A, row_A, col_A);
   save(mat_B, row_B, col_B);
   save(result, row_A, col_B);
