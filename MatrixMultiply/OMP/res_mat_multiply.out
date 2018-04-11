@@ -1,0 +1,10 @@
+Hilo 2 iniciando..
+Numero de hilos: 8
+Hilo 0 iniciando..
+Hilo 5 iniciando..
+Hilo 4 iniciando..
+Hilo 7 iniciando..
+Hilo 1 iniciando..
+Hilo 6 iniciando..
+Hilo 3 iniciando..
+Tiempo con OMP: 0.172630

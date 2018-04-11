@@ -4,7 +4,7 @@
 #include <omp.h>
 
 #define CHUNKSIZE 10
-#define N 1200
+#define N 100
 
 
 void fill_matrix(float *M, int row, int col){

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <omp.h>
-#define CHUNKSIZE 10
-
+#define CHUNKSIZE 1250
+#define N 10000
 
 
 
@@ -62,11 +62,8 @@ void save(float *V, int len){
 
 
 int main(){
-  int len;
+  int len = N;
   clock_t start, end;
-
-  printf("Digite la longitud de los vectores: \n");
-  scanf("%d", &len);
 
   start = clock();
   //Memoria para los vectores

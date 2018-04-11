@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define N 10000
+
 
 void fill_vector(float *V, int len){
   float aux = 5.0;
@@ -46,11 +48,8 @@ void save(float *V, int len){
 
 
 int main(){
-  int len;
-  clock_t start, end;
-
-  printf("Digite la longitud de los vectores: \n");
-  scanf("%d", &len);
+  int len = N;
+  clock_t start, end; 
 
   start = clock();
   //Memoria para los vectores
