@@ -54,7 +54,7 @@ int main(){
     exit(-1);
   }
 
-  error = cudaMalloc((void**)&d_b, size);
+  error = cudaMalloc((void**)&d_B, size);
   if (error != cudaSuccess){
     printf("Error solicitando memoria en la GPU para d_B\n");
     exit(-1);
@@ -86,7 +86,7 @@ int main(){
 
   cudaMemcpy(h_R, d_R, size, cudaMemcpyDeviceToHost);
   print(h_R, n);
-  
+
 
 
   return 0;
