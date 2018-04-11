@@ -70,9 +70,9 @@ int main(){
   fill_vector(h_A, n);
   fill_vector(h_B, n);
   print(h_A, n);
-  printf("---------------------------------\n", );
+  printf("---------------------------------\n");
   print(h_B, n);
-  printf("---------------------------------\n", );
+  printf("---------------------------------\n");
   //Copy from CPU to GPU
   cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
   cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
