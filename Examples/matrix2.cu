@@ -63,7 +63,7 @@ int main(){
   fill_vector(h_M, n);
   print(h_M, n);
   //Copy from CPU to GPU
-  /*cudaMemcpy(d_M, h_M, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_M, h_M, size, cudaMemcpyHostToDevice);
 
   //Dimension kernel
   dim3 dimGrid(ceil(n/10.0), 1, 1);
@@ -75,11 +75,7 @@ int main(){
   cudaMemcpy(h_R, d_R, size, cudaMemcpyDeviceToHost);
   print(h_R, n);
 
-  free(h_M);
-  free(h_R);
-  cudaFree(d_M);
-  cudaFree(d_R);
-*/
+
 
   return 0;
 }
