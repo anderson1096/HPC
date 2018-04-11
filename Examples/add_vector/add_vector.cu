@@ -22,11 +22,11 @@ void print(float *V, int len){
 }
 
 __global__
-void MatrixKernel(float* d_M, float* d_R, int n){
+void AddVector(float* d_A, float* d_B, float* d_R, int n){
   //calculate row index of element
   int i = threadIdx.x + blockDim.x * blockIdx.x;
 
-  if (i < n) d_R[i] = 2 * d_M[i];
+  if (i < n) d_R[i] = d_A[i] + d_B[i];
   return;
 }
 
@@ -39,17 +39,24 @@ int main(){
   cudaError_t error = cudaSuccess;
 
   //CPU
-  float *h_M, *h_R;
-  h_M = (float*)malloc(size);
+  float *h_A, *h_B, *h_R;
+  h_A = (float*)malloc(size);
+  h_B = (float*)malloc(size);
   h_R = (float*)malloc(size);
 
 
   //GPU
-  float *d_M, *d_R;
+  float *d_A, *d_B, *d_R;
 
-  error = cudaMalloc((void**)&d_M, size);
+  error = cudaMalloc((void**)&d_A, size);
   if (error != cudaSuccess){
-    printf("Error solicitando memoria en la GPU para d_M\n");
+    printf("Error solicitando memoria en la GPU para d_A\n");
+    exit(-1);
+  }
+
+  error = cudaMalloc((void**)&d_b, size);
+  if (error != cudaSuccess){
+    printf("Error solicitando memoria en la GPU para d_B\n");
     exit(-1);
   }
 
@@ -60,21 +67,26 @@ int main(){
   }
 
   //Fill Matrix
-  fill_vector(h_M, n);
-  print(h_M, n);
+  fill_vector(h_A, n);
+  fill_vector(h_B, n);
+  print(h_A, n);
+  printf("---------------------------------\n", );
+  print(h_B, n);
+  printf("---------------------------------\n", );
   //Copy from CPU to GPU
-  cudaMemcpy(d_M, h_M, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
 
   //Dimension kernel
   dim3 dimGrid(ceil(n/10.0), 1, 1);
   dim3 dimBlock(10,1,1);
-  MatrixKernel<<<dimGrid, dimBlock>>>(d_M, d_R, n);
+  AddVector<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, n);
   cudaDeviceSynchronize();
 
 
   cudaMemcpy(h_R, d_R, size, cudaMemcpyDeviceToHost);
   print(h_R, n);
-
+  
 
 
   return 0;
