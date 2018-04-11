@@ -87,7 +87,8 @@ int main(){
   cudaMemcpy(h_R, d_R, size, cudaMemcpyDeviceToHost);
   print(h_R, n);
 
-
+  free(h_A); free(h_B); free(h_R);
+  cudaFree(d_A); cudaFree(d_B); cudaFree(d_R);
 
   return 0;
 }
