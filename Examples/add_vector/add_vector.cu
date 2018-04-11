@@ -81,7 +81,7 @@ int main(){
   dim3 dimGrid(ceil(n/10.0), 1, 1);
   dim3 dimBlock(10,1,1);
   AddVector<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, n);
-  cudaDeviceSynchronize();
+  
 
 
   cudaMemcpy(h_R, d_R, size, cudaMemcpyDeviceToHost);
