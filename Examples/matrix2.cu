@@ -61,7 +61,7 @@ int main(){
 
   //Fill Matrix
   fill_vector(h_M, n);
-
+  print(h_M, n);
   //Copy from CPU to GPU
   /*cudaMemcpy(d_M, h_M, size, cudaMemcpyHostToDevice);
 
