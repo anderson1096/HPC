@@ -34,13 +34,29 @@ int main(){
   int n = 100;
   int size = n * sizeof(float);
 
+  //Manejo de errores en cuda
+  cudaError_t error = cudaSuccess;
+
   //CPU
-  float *h_M = (float*)malloc(size);
-  float *h_R = (float*)malloc(size);
+  float *h_M, *h_R;
+  h_M = (float*)malloc(size);
+  h_R = (float*)malloc(size);
+  
+
   //GPU
   float *d_M, *d_R;
-  cudaMalloc((void**)&d_M, size);
-  cudaMalloc((void**)&d_R, size);
+  
+  error = cudaMalloc((void**)&d_M, size);
+  if (error != cudaSuccess){
+    printf("Error solicitando memoria en la GPU para d_M\n");
+    exit(-1);
+  }
+
+  error = cudaMalloc((void**)&d_R, size);
+  if (error != cudaSuccess){
+    printf("Error solicitando memoria en la GPU para d_R\n");
+    exit(-1);
+  }
 
   //Fill Matrix
   fill_vector(h_M, size);
@@ -52,7 +68,9 @@ int main(){
   dim3 dimGrid(ceil(n/10.0), 1, 1);
   dim3 dimBlock(10,1,1);
   MatrixKernel<<<dimGrid, dimBlock>>>(d_M, d_R, n);
+  cudaDeviceSynchronize();
 
+  
   cudaMemcpy(h_R, d_R, size, cudaMemcpyDeviceToHost);
   print(h_R, n);
 
