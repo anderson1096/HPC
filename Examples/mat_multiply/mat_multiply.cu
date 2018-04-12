@@ -32,7 +32,7 @@ void MatrixMultiplyKernel(float *d_A, float *d_B, float *d_R, int colsA, int row
 	int row = threadIdx.y + blockDim.y * blockIdx.y;
 
 	if((row < rowsA) && (col < colsB)){
-		int cont = 0;
+		float cont = 0.0;
 		for (int k = 0; k < rowsB; ++k){
 			cont += d_A[row * colsA + k] * d_B[k * colsB + col];
 		}
