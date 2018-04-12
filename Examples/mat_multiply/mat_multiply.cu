@@ -57,9 +57,7 @@ int main(int argc, char** argv)
 
 	float *h_A, *h_B, *h_R;
 	int rowsA, rowsB, colsA, colsB;
-	float sizeA = rowsA * colsA * sizeof(float);
-	float sizeB = rowsB * colsB * sizeof(float);
-	float sizeR = rowsA * colsB * sizeof(float);
+	
 
 	cudaError_t error = cudaSuccess;
 
@@ -72,6 +70,11 @@ int main(int argc, char** argv)
 	fscanf(file_2, "%d", &rowsB);
 	fscanf(file_2, "%d", &colsB);
 
+	float sizeA = rowsA * colsA * sizeof(float);
+	float sizeB = rowsB * colsB * sizeof(float);
+	float sizeR = rowsA * colsB * sizeof(float);
+
+	
 	h_A = (float*)malloc(sizeA);
 	h_B = (float*)malloc(sizeB);
 	h_R = (float*)malloc(sizeR);
