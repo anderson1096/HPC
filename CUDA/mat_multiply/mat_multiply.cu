@@ -16,17 +16,17 @@ void read(float *M, FILE *source, int rows, int cols){
 
 __host__
 void print(float *M, int rows, int cols){
-  printf("\n");		
-  printf("--------------------------------------\n");
-  for(int i = 0; i < rows; i++) {
-    for(int j = 0; j < cols; j++) {
-      printf("%.2f ", M[i * cols + j]);
-    }
-    printf("\n");
-  }
-  printf("--------------------------------------\n");
-  printf("\n");
-  return;
+  	printf("\n");		
+  	printf("--------------------------------------\n");
+  	for(int i = 0; i < rows; i++) {
+    	for(int j = 0; j < cols; j++) {
+      		printf("%.2f ", M[i * cols + j]);
+    	}
+    	printf("\n");
+  	}
+  	printf("--------------------------------------\n");
+  	printf("\n");
+  	return;
 }
 
 __global__
