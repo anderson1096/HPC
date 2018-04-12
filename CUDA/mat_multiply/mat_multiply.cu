@@ -26,7 +26,7 @@ void print(float *M, int rows, int cols){
   	}
   	printf("--------------------------------------\n");
   	printf("\n");
-  	return;
+  	return; 
 }
 
 __global__
