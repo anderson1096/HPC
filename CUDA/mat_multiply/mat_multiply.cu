@@ -16,14 +16,14 @@ void read(float *M, FILE *source, int rows, int cols){
 
 __host__
 void print(float *M, int rows, int cols){
-  printf("\n");		
+  printf("\n");
   printf("---------------------------------------\n");
   for(int i = 0; i < rows; i++) {
-    for(int j = 0; j < cols; j++) {
-      printf("%.2f ", M[i * cols + j]);
-    }
-    printf("\n");
-  }
+  		for(int j = 0; j < cols; j++) {
+     		printf("%.2f ", M[i * cols + j]);
+    	}
+   		printf("\n");
+  	}
   printf("---------------------------------------\n");
   printf("\n");
   return;
@@ -31,8 +31,8 @@ void print(float *M, int rows, int cols){
 
 __global__
 void MatrixMultiplyKernel(float *d_A, float *d_B, float *d_R, int colsA, int rowsA, int colsB, int rowsB){
-	
-	int col = threadIdx.x + blockDim.x * blockIdx.x; 
+
+	int col = threadIdx.x + blockDim.x * blockIdx.x;
 	int row = threadIdx.y + blockDim.y * blockIdx.y;
 
 	if((row < rowsA) && (col < colsB)){
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
 	float *h_A, *h_B, *h_R;
 	int rowsA, rowsB, colsA, colsB;
-	
+
 
 	cudaError_t error = cudaSuccess;
 
