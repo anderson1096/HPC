@@ -39,7 +39,7 @@ void MatrixMultiplyKernel(float *d_A, float *d_B, float *d_R, int colsA, int row
 	if((row < rowsA) && (col < colsB)){
 		int cont = 0;
 		for (int k = 0; k < rowsB; ++k){
-			cont += d_A[row * colsA + k] * d_B[k * colsB + col]
+			cont += d_A[row * colsA + k] * d_B[k * colsB + col];
 		}
 		d_R[row * colsB + col] = cont;
 	}
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 	float sizeB = rowsB * colsB * sizeof(float);
 	float sizeR = rowsA * colsB * sizeof(float);
 
-	
+
 	h_A = (float*)malloc(sizeA);
 	h_B = (float*)malloc(sizeB);
 	h_R = (float*)malloc(sizeR);
