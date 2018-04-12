@@ -16,12 +16,16 @@ void read(float *M, FILE *source, int rows, int cols){
 
 __host__
 void print(float *M, int rows, int cols){
+  printf("\n");		
+  printf("--------------------------------Inicio MATRIZ--------------------------------\n");
   for(int i = 0; i < rows; i++) {
     for(int j = 0; j < cols; j++) {
       printf("%f ", M[i * cols + j]);
     }
     printf("\n");
   }
+  printf("--------------------------------Fin MATRIZ--------------------------------\n");
+  printf("\n");
   return;
 }
 
