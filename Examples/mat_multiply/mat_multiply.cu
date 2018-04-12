@@ -69,6 +69,11 @@ int main(int argc, char** argv)
 	fscanf(file_2, "%d", &rowsB);
 	fscanf(file_2, "%d", &colsB);
 
+	if (colsA != rowsB){
+		printf("Es imposible multiplicar las matrices\n");
+		return 1;
+	}
+	
 	float sizeA = rowsA * colsA * sizeof(float);
 	float sizeB = rowsB * colsB * sizeof(float);
 	float sizeR = rowsA * colsB * sizeof(float);
