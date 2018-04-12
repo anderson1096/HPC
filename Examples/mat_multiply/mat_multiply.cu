@@ -28,11 +28,6 @@ void print(float *M, int rows, int cols){
 __global__
 void MatrixMultiplyKernel(float *d_A, float *d_B, float *d_R, int colsA, int rowsA, int colsB, int rowsB){
 	
-	if(colsA != rowsB){
-		printf("Las matrices no se pueden multiplicar\n");
-		exit(-1);
-	}
-
 	int col = threadIdx.x + blockDim.x * blockIdx.x; 
 	int row = threadIdx.y + blockDim.y * blockIdx.y;
 
