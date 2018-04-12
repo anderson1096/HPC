@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 		printf("Es imposible multiplicar las matrices\n");
 		return 1;
 	}
-	
+
 	float sizeA = rowsA * colsA * sizeof(float);
 	float sizeB = rowsB * colsB * sizeof(float);
 	float sizeR = rowsA * colsB * sizeof(float);
@@ -110,7 +110,6 @@ int main(int argc, char** argv)
 	cudaMemcpy(d_B, h_B, sizeB, cudaMemcpyHostToDevice);
 
 	int blockSize = 32;
-
 	dim3 dimGrid(ceil((colsB) / float(blockSize)), ceil((rowsA)/ float(blockSize)), 1);
 	dim3 dimBlock(blockSize, blockSize, 1);
 
