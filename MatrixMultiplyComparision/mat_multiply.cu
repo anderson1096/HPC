@@ -158,7 +158,7 @@ int main(int argc, char** argv)
 	cudaMemcpy(d_A, h_A, sizeA, cudaMemcpyHostToDevice);
 	cudaMemcpy(d_B, h_B, sizeB, cudaMemcpyHostToDevice);
 
-	int blockSize = 10;
+	int blockSize = 32;
 	dim3 dimGrid(32, 32, 1);
 	dim3 dimBlock(blockSize, blockSize, 1);
 
