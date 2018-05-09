@@ -73,7 +73,16 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
 	}
 
-	print(d_R, rowsA, colsB);
+	printf("\n");
+  printf("----------------------------------------\n");
+  for(int i = 0; i < rowsA; i++) {
+  		for(int j = 0; j < colsB; j++) {
+     		printf("%.2f ", d_R[i * cols + j]);
+    	}
+		printf("\n");
+  }
+  printf("----------------------------------------\n");
+  printf("\n");
 	return;
 }
 
