@@ -71,8 +71,9 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 
 	if(row < rowsA && col < colsB){
 		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
-		printf("Valor: %.2f Pos: %d %d\n", Pvalue, row, col);
 	}
+
+	print(d_R, rowsA, colsB);
 	return;
 }
 
