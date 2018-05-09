@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 	read(h_B, file_2, rowsB, colsB);
 
 	//fill_matrix(h_A, rowsA, colsA);
-	//fill_matrix(h_B, rowsB, colsB);
+	//	fill_matrix(h_B, rowsB, colsB);
 
 	float *d_A, *d_B, *d_R;
 
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
 	cudaMemcpy(d_A, h_A, sizeA, cudaMemcpyHostToDevice);
 	cudaMemcpy(d_B, h_B, sizeB, cudaMemcpyHostToDevice);
 
-	int blockSize = 32;
+	int blockSize = 10;
 	dim3 dimGrid(32, 32, 1);
 	dim3 dimBlock(blockSize, blockSize, 1);
 
