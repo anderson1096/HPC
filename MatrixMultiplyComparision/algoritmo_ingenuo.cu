@@ -2,6 +2,15 @@
 #include <stdio.h>
 #include <cuda.h>
 
+__host__
+void fill_matrix(float* M , int row , int col){
+	for (int i = 0; i < row; ++i){
+		for (int j = 0; j < col; ++j)
+		{
+			M[i*col + j] = 2.0;
+		}
+	}
+}
 
 __host__
 void read(float *M, FILE *source, int rows, int cols){
@@ -50,25 +59,29 @@ int main(int argc, char** argv)
 {
 	clock_t start, end;
 
-	if (argc != 3){
+	/*if (argc != 3){
 		printf("Debe añadir los nombres de los archivos\n");
 		return 1;
-	}
+	}*/
 
 	float *h_A, *h_B, *h_R;
 	int rowsA, rowsB, colsA, colsB;
 
+	rowsA = 100;
+	rowsB = 100;
+	colsA = 100;
+	colsB = 100;
 
 	cudaError_t error = cudaSuccess;
 
-	FILE *file_1, *file_2;
+	/*FILE *file_1, *file_2;
 	file_1 = fopen(argv[1], "r");
 	file_2 = fopen(argv[2], "r");
 
 	fscanf(file_1, "%d", &rowsA);
 	fscanf(file_1, "%d", &colsA);
 	fscanf(file_2, "%d", &rowsB);
-	fscanf(file_2, "%d", &colsB);
+	fscanf(file_2, "%d", &colsB);*/
 
 	if (colsA != rowsB){
 		printf("Es imposible multiplicar las matrices\n");
@@ -86,6 +99,9 @@ int main(int argc, char** argv)
 
 	read(h_A, file_1, rowsA, colsA);
 	read(h_B, file_2, rowsB, colsB);
+
+	fill_matrix(h_A, rowsA, colsA);
+	fill_matrix(h_B, rowsB, colsB);
 
 	float *d_A, *d_B, *d_R;
 
