@@ -175,14 +175,10 @@ int main(void){
 
 	endGPU = clock();
 
-	//imprime(h_C,filA,colB);
-	double time_GPU=((double)(endGPU-startGPU))/CLOCKS_PER_SEC;
-	cout<<"El tiempo transcurrido en la GPU fue: "<<time_GPU<<endl;
-	//-----------------------------------------------------------------------------------
-	cout<<"El tiempo de aceleramiento fue: "<<time_CPU/time_GPU<<endl;
+	imprime(A, filA, colA);
+	imprime(B, filB, colB);
+	imprime(h_C, filA, colB);
 
-	if(compara(h_C, C, filA, colB)) cout << "Buen cálculo" << endl;
-	else cout << "Mal cálculo" << endl;
 
 	free(A);free(B);free(C);free(h_C);
 	cudaFree(d_A);
