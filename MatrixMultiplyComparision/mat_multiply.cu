@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <cuda.h>
 
-#define TILE_WIDTH 2
+#define TILE_WIDTH 32
 
 __host__
 void fill_matrix(float* M , int row , int col){
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
 	cudaMemcpy(d_B, h_B, sizeB, cudaMemcpyHostToDevice);
 
 	int blockSize = 32;
-	dim3 dimGrid(2, 2, 1);
+	dim3 dimGrid(32, 32, 1);
 	dim3 dimBlock(blockSize, blockSize, 1);
 
 	MatrixMultiplySMKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, colsA, rowsA, colsB, rowsB);
