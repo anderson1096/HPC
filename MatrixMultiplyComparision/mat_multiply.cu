@@ -70,6 +70,7 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 	}
 
 	if(row < rowsA && col < colsB){
+		printf("Pvalue: %.f\n", Pvalue);
 		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
 	}
 	return;
