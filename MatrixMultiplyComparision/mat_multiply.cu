@@ -95,7 +95,12 @@ int main(int argc, char** argv)
 	}*/
 
 	float *h_A, *h_B, *h_R;
-	int rowsA, rowsB, colsA, colsB = 100;
+	int rowsA, rowsB, colsA, colsB;
+
+	rowsA = 100;
+	rowsB = 100;
+	colsA = 100;
+	colsB = 100;
 
 
 
@@ -127,8 +132,8 @@ int main(int argc, char** argv)
 	//read(h_A, file_1, rowsA, colsA);
 	//read(h_B, file_2, rowsB, colsB);
 
-	fill_matrix(*h_A, rowsA, colsA);
-	fill_matrix(*h_B, rowsB, colsB);
+	fill_matrix(h_A, rowsA, colsA);
+	fill_matrix(h_B, rowsB, colsB);
 
 	float *d_A, *d_B, *d_R;
 
