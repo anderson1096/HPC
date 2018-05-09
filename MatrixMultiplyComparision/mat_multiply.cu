@@ -97,10 +97,10 @@ int main(int argc, char** argv)
 	float *h_A, *h_B, *h_R;
 	int rowsA, rowsB, colsA, colsB;
 
-	rowsA = 100;
-	rowsB = 100;
-	colsA = 100;
-	colsB = 100;
+	rowsA = 10;
+	rowsB = 10;
+	colsA = 10;
+	colsB = 10;
 
 
 
