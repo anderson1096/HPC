@@ -5,6 +5,16 @@
 #define TILE_WIDTH 2
 
 __host__
+void fill_vector(float* M , int row , int col){
+	for (int i = 0; i < row; ++i){
+		for (int j = 0; j < col; ++j)
+		{
+			matrix[i*col + j] = 2.0;
+		}
+	}
+}
+
+__host__
 void read(float *M, FILE *source, int rows, int cols){
 	for (int i = 0; i < rows; ++i){
 		for (int j = 0; j < cols; ++j){
