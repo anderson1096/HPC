@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 1200
+#define N 4
 
 
 void fill_matrix(float *M, int row, int col){
@@ -61,7 +61,7 @@ void save(float *M, int row, int col){
         fprintf(f, "%.2f, ", M[i * col + j]);
       }
     }
-     fprintf(f, "\n");   
+     fprintf(f, "\n");
   }
 
   fprintf(f, "\n");
@@ -90,7 +90,7 @@ int main() {
   float *mat_A = (float*)malloc(row_A * col_A * sizeof(float));
   float *mat_B = (float*)malloc(row_B * col_B * sizeof(float));
   float *result = (float*)malloc(row_A * col_B * sizeof(float));
-  
+
   fill_matrix(mat_A, row_A, col_A);
   fill_matrix(mat_B, row_B, col_B);
 
