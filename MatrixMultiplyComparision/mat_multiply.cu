@@ -44,7 +44,7 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 	int row = by * TILE_WIDTH + ty;
 
 	float Pvalue = 0;
-	for (int m = 0; m < (TILE_WIDTH + colsA - 1)/TILE_WIDTH; ++m){
+	for (int m = 0; m < colsA/TILE_WIDTH; ++m){
 
 		if(m * TILE_WIDTH + tx < colsA && row < rowsA){
 			Ads[ty][tx] = d_A[row * colsA + m * TILE_WIDTH + tx];
