@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <cuda.h>
 
-#define TILE_WIDTH 1
+#define TILE_WIDTH 2
 
 __host__
 void read(float *M, FILE *source, int rows, int cols){
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 	cudaMemcpy(d_B, h_B, sizeB, cudaMemcpyHostToDevice);
 
 	int blockSize = 32;
-	dim3 dimGrid(ceil((colsB) / float(blockSize)), ceil((rowsA)/ float(blockSize)), 1);
+	dim3 dimGrid(2, 2, 1);
 	dim3 dimBlock(blockSize, blockSize, 1);
 
 	MatrixMultiplySMKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, colsA, rowsA, colsB, rowsB);
