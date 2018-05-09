@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <cuda.h>
 
-#define TILE_WIDTH 2
+#define TILE_WIDTH 1
 
 __host__
 void read(float *M, FILE *source, int rows, int cols){
