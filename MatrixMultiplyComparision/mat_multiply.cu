@@ -50,14 +50,14 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 			Ads[ty][tx] = d_A[row * colsA + m * TILE_WIDTH + tx];
 		}
 		else{
-			Ads[ty][tx] = 0.0;
+			Ads[ty][tx] = 3.0;
 		}
 
 		if(m * TILE_WIDTH + ty < rowsB && col < colsB){
 			Bds[ty][tx] = d_B[(m * TILE_WIDTH + ty) * colsB + col];
 		}
 		else{
-			Bds[ty][tx] = 0.0;
+			Bds[ty][tx] = 2.0;
 		}
 
 		__syncthreads();
@@ -73,16 +73,6 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
 	}
 
-	printf("\n");
-  printf("----------------------------------------\n");
-  for(int i = 0; i < rowsA; i++) {
-  		for(int j = 0; j < colsB; j++) {
-     		printf("%.2f ", d_R[i * colsB + j]);
-    	}
-		printf("\n");
-  }
-  printf("----------------------------------------\n");
-  printf("\n");
 	return;
 }
 
