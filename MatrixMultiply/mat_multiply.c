@@ -9,7 +9,7 @@ void fill_matrix(float *M, int row, int col){
   float aux = 5.0;
   for (int i = 0; i < row; i++) {
     for (int j = 0; j < col; j++) {
-      M[i * col + j] = (float)rand() / (float)(RAND_MAX / aux);
+      M[i * col + j] = 2;
     }
   }
 }
