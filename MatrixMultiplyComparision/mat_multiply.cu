@@ -1,188 +1,168 @@
-//MULTIPLICACIÓN DE MATRICES CON SHARED MEMORY
-/* Información para tener en cuenta:
-* A thread block will be divided into WarpsPerBlock = (ThreadsPerBlock + WarpSize - 1) / WarpSize
-* Para leer más : http://stackoverflow.com/questions/10460742/how-do-cuda-blocks-warps-threads-map-onto-cuda-cores
-*/
-#include<iostream>
-#include<stdio.h>
-#include<malloc.h>
-#include<cuda.h>
-using namespace std;
+#include <stdlib.h>
+#include <stdio.h>
+#include <cuda.h>
 
-#define TILE_WIDTH 32 //¿máximo?
+#define TILE_WIDTH 2
+
+__host__
+void read(float *M, FILE *source, int rows, int cols){
+	for (int i = 0; i < rows; ++i){
+		for (int j = 0; j < cols; ++j){
+			fscanf(source, "%f,", &M[i * cols + j]);
+		}
+	}
+	fclose(source);
+	return;
+}
+
+__host__
+void print(float *M, int rows, int cols){
+  printf("\n");
+  printf("----------------------------------------\n");
+  for(int i = 0; i < rows; i++) {
+  		for(int j = 0; j < cols; j++) {
+     		printf("%.2f ", M[i * cols + j]);
+    	}
+		printf("\n");
+  }
+  printf("----------------------------------------\n");
+  printf("\n");
+  return;
+}
 
 __global__
-void MultiplicaMatricesCU(int* A,int filA,int colA,int* B,int filB,int colB,int* C){//filC=filA,colC=colB
+void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int rowsA, int colsB, int rowsB){
 
-	//Tamaño total de los elementos con que vamos a trabajar
-	__shared__ float A_s[TILE_WIDTH][TILE_WIDTH];
-	__shared__ float B_s[TILE_WIDTH][TILE_WIDTH];
+	__shared__ float Ads[TILE_WIDTH][TILE_WIDTH];
+	__shared__ float Bds[TILE_WIDTH][TILE_WIDTH];
 
-	//Para saber en qué bloque y qué hilo estamos
-	int bx = blockIdx.x;
-  	int by = blockIdx.y;
-  	int tx = threadIdx.x;
-	int ty = threadIdx.y;
-	int gx = gridDim.x;
-	int gy = gridDim.y;
+	int bx = blockIdx.x; int by = blockIdx.y;
+	int tx = threadIdx.x; int ty = threadIdx.y;
+	int gx = gridDim.x; int gy = gridDim.y;
 
-	//Para el resultado de C
-	int row = by * TILE_WIDTH + ty;
 	int col = bx * TILE_WIDTH + tx;
+	int row = by * TILE_WIDTH + ty;
 
-	int suma = 0;//para llevar la suma de las multiplicaciones
+	float Pvalue = 0;
+	int m = 0, n = 0;
+	while( m < gx && n < gy){
 
-	int n = 0, m = 0;
-  	while(m < gx && n < gy){
-		/* De A queremos sacar las columnas, por eso:
-		* col = ( ( m * TILE_WIDTH ) + tx )
-		* col = ( ( bx * TILE_WIDTH ) + tx )
-		* Hacemos la comparación entre ambas.
-		* Vemos que m se mueve entre los bloques en el eje x (las columnas)
-		*/
-		if(( ( m * TILE_WIDTH ) + tx ) < colA && row < filA) //Si no se pasa
-			A_s[ty][tx] = A[ (row * colA) + ( ( m * TILE_WIDTH ) + tx )];//(Row*colA + k), donde k-> 0..filB (filB = colA)
-		else A_s[ty][tx] = 0;
-
-		/* De B queremos sacar las filas, por eso:
-		* row = ( ( m * TILE_WIDTH ) + tx )
-		* row = ( ( by * TILE_WIDTH ) + tx )
-		* Hacemos la comparación entre ambas.
-		* Vemos que n se mueve entre los bloques en el eje y (las filas)
-		*/
-		if(( n * TILE_WIDTH + ty) < filB && col < colB)
-			B_s[ty][tx] = B[( ( n * TILE_WIDTH + ty) * colB ) + col ];//(k*colB)+Col, donde k-> 0..filB
-		else B_s[ty][tx] = 0;
-
-		m++; n++;
-
-		__syncthreads();//espera a todos los hilos
-
-		for (int k=0; k < TILE_WIDTH ; ++k) {
-			suma += A_s[ty][k] * B_s[k][tx];
+		if(m * TILE_WIDTH + tx < colsA && row < rowsA){
+			Ads[ty][tx] = d_A[row * colsA + m * TILE_WIDTH + tx];
 		}
+		else{
+			Ads[ty][tx] = 0.0;
+		}
+
+		if(n * TILE_WIDTH + ty < rowsB && col < colsB){
+			Bds[ty][tx] = d_B[(n * TILE_WIDTH + ty) * colsB + col];
+		}
+		else{
+			Bds[ty][tx] = 0.0;
+		}
+
+		m++;
+		n++;
+
+		__syncthreads();
+
+		for (int k = 0; k < TILE_WIDTH; ++k){
+			Pvalue += Ads[ty][k] * Bds[k][tx];
+		}
+
 		__syncthreads();
 	}
-	if(row < filA && col < colB)
-		C[ (row * colB) + col] = suma; //C[filA][colB]
-}
 
-__host__
-void multiplicaMatrices(int* X,int filX,int colX,int* Y,int filY,int colY,int* Z){
-	for(int i=0;i<filX;i++){
-		for(int j=0;j<colY;j++){
-			int suma=0;
-			for(int k=0;k<filY;k++){
-				suma=suma+X[(i*colX)+k]*Y[(k*colY)+j];
-
-			}
-			Z[(i*colY)+j]=suma;
-		}
+	if(row < rowsA && col < colsB){
+		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
 	}
+	return;
 }
 
-__host__
-void imprime(int* A,int filas, int columnas){//imprime como si fuera una matriz
-	for(int i = 0; i < filas; i++){
-        	for(int j = 0; j < columnas; j++){
-            		cout<<A[(i*columnas)+j]<<" ";
-        	}
-        cout<<endl;
-    }
-}
 
-__host__
-void inicializa(int *A,int filas, int columnas){//inicializa arreglos
-	for(int i=0;i<filas*columnas;i++){
-		A[i]=1;
-	}
-}
+int main(int argc, char** argv)
+{
 
-__host__
-bool compara(int *A, int *B, int filas, int columnas){
-	for(int i = 0; i < filas; i++){
-		for(int j = 0; j < columnas; j++){
-			if(A[i*columnas+j] != B[i*columnas+j]) return false;
-		}
-	}
-	return true;
-}
-
-int main(void){
-
-	clock_t startCPU,endCPU,startGPU,endGPU;
-  	cudaError_t error = cudaSuccess;
-	int *A,*B,*C; //A[filA][colA],B[filB][colB],C[filA][colB]
-	int *d_A,*d_B,*d_C,*h_C;
-	//int filA=2048,colA=2048,filB=2048,colB=2048;
-	int filA=1,colA=1024,filB=1024,colB=1;
-	//-------------------------------CPU--------------------------------------------------------------------
-	A=(int*)malloc(filA*colA*sizeof(int));
-	B=(int*)malloc(filB*colB*sizeof(int));
-	C=(int*)malloc(filA*colB*sizeof(int));
-
-	inicializa(A,filA,colA);
-	inicializa(B,filB,colB);
-
-	if(colA==filB){//para que sean multiplicables
-		startCPU = clock();
-		multiplicaMatrices(A,filA,colA,B,filB,colB,C);
-		endCPU = clock();
-		//imprime(C,filA,colB);
-	}else{
-		cout<<"Error, no se pueden multiplicar"<<endl;
-		return 0;
+	if (argc != 3){
+		printf("Debe añadir los nombres de los archivos\n");
+		return 1;
 	}
 
-	double time_CPU=((double)(endCPU-startCPU))/CLOCKS_PER_SEC;
-	cout<<"El tiempo transcurrido en la CPU fue: "<<time_CPU<<endl;
-	//-------------------------------GPU--------------------------------------------------------------------
-	h_C=(int*)malloc(filA*colB*sizeof(int));
-
-	startGPU = clock();
-
-	error=cudaMalloc((void**)&d_A,filA*colA*sizeof(int));
-        if(error != cudaSuccess){
-            cout<<"Error reservando memoria para d_A"<<endl;
-            //return -1;
-        }
-
-	cudaMalloc((void**)&d_B,filB*colB*sizeof(int));
-        if(error != cudaSuccess){
-            cout<<"Error reservando memoria para d_B"<<endl;
-            //return -1;
-        }
-
-	cudaMalloc((void**)&d_C,filA*colB*sizeof(int));
-        if(error != cudaSuccess){
-            cout<<"Error reservando memoria para d_C"<<endl;
-            //return -1;
-        }
-
-	cudaMemcpy(d_A,A,filA*colA*sizeof(int),cudaMemcpyHostToDevice);//destino d_A y origen A
-	cudaMemcpy(d_B,B,filB*colB*sizeof(int),cudaMemcpyHostToDevice);
-
-	//Depende directamente de la dimensión de las matrices
-	dim3 dimblock(32,32,1);
-	dim3 dimGrid(32,32,1);
-  	//dim3 dimGrid(ceil((double)(colB/32)),ceil((double)(filA/32)),1);
-
-	MultiplicaMatricesCU<<<dimGrid,dimblock>>>(d_A,filA,colA,d_B,filB,colB,d_C);
-
-	cudaDeviceSynchronize();
-
-	cudaMemcpy(h_C,d_C,filA*colB*sizeof(int),cudaMemcpyDeviceToHost);
-
-	endGPU = clock();
-
-	imprime(A, filA, colA);
-	imprime(B, filB, colB);
-	imprime(h_C, filA, colB);
+	float *h_A, *h_B, *h_R;
+	int rowsA, rowsB, colsA, colsB;
 
 
-	free(A);free(B);free(C);free(h_C);
+	cudaError_t error = cudaSuccess;
+
+	FILE *file_1, *file_2;
+	file_1 = fopen(argv[1], "r");
+	file_2 = fopen(argv[2], "r");
+
+	fscanf(file_1, "%d", &rowsA);
+	fscanf(file_1, "%d", &colsA);
+	fscanf(file_2, "%d", &rowsB);
+	fscanf(file_2, "%d", &colsB);
+
+	if (colsA != rowsB){
+		printf("Es imposible multiplicar las matrices\n");
+		return 1;
+	}
+
+	float sizeA = rowsA * colsA * sizeof(float);
+	float sizeB = rowsB * colsB * sizeof(float);
+	float sizeR = rowsA * colsB * sizeof(float);
+
+
+	h_A = (float*)malloc(sizeA);
+	h_B = (float*)malloc(sizeB);
+	h_R = (float*)malloc(sizeR);
+
+	read(h_A, file_1, rowsA, colsA);
+	read(h_B, file_2, rowsB, colsB);
+
+	float *d_A, *d_B, *d_R;
+
+	error = cudaMalloc((void**)&d_A, sizeA);
+	if (error != cudaSuccess){
+		printf("Error solicitando memoria para d_A \n");
+		return 1;
+	}
+
+	error = cudaMalloc((void**)&d_B, sizeB);
+	if (error != cudaSuccess){
+		printf("Error solicitando memoria para d_B \n");
+		return 1;
+	}
+
+	error = cudaMalloc((void**)&d_R, sizeR);
+	if (error != cudaSuccess){
+		printf("Error solicitando memoria para d_R \n");
+		return 1;
+	}
+
+	cudaMemcpy(d_A, h_A, sizeA, cudaMemcpyHostToDevice);
+	cudaMemcpy(d_B, h_B, sizeB, cudaMemcpyHostToDevice);
+
+	int blockSize = 32;
+	dim3 dimGrid(ceil((colsB) / float(blockSize)), ceil((rowsA)/ float(blockSize)), 1);
+	dim3 dimBlock(blockSize, blockSize, 1);
+
+	MatrixMultiplySMKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, colsA, rowsA, colsB, rowsB);
+	cudaMemcpy(h_R, d_R, sizeR, cudaMemcpyDeviceToHost);
+
+	print(h_A, rowsA, colsA);
+	print(h_B, rowsB, colsB);
+	print(h_R, rowsA, colsB);
+
+
+	free(h_A);
+	free(h_B);
+	free(h_R);
 	cudaFree(d_A);
 	cudaFree(d_B);
-	cudaFree(d_C);
+	cudaFree(d_R);
+
+
+	/* code */
 	return 0;
 }
