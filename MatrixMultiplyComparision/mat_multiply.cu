@@ -130,8 +130,8 @@ int main(int argc, char** argv)
 	h_B = (float*)malloc(sizeB);
 	h_R = (float*)malloc(sizeR);
 
-	read(h_A, file_1, rowsA, colsA);
-	read(h_B, file_2, rowsB, colsB);
+	//read(h_A, file_1, rowsA, colsA);
+	//read(h_B, file_2, rowsB, colsB);
 
 	fill_matrix(h_A, rowsA, colsA);
 	fill_matrix(h_B, rowsB, colsB);
@@ -170,9 +170,9 @@ int main(int argc, char** argv)
 	end = clock();
 
 	printf("Tiempo: %.6f\n", (double)(end - start)/CLOCKS_PER_SEC);
-	print(h_A, rowsA, colsA);
-	print(h_B, rowsB, colsB);
-	print(h_R, rowsA, colsB);
+	//print(h_A, rowsA, colsA);
+	//print(h_B, rowsB, colsB);
+	//print(h_R, rowsA, colsB);
 
 
 	free(h_A);

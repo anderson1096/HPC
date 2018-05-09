@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 4
+#define N 100
 
 
 void fill_matrix(float *M, int row, int col){

@@ -138,9 +138,9 @@ int main(int argc, char** argv)
 	end = clock();
 	printf("Tiempo : %.6f\n", (double)(end - start)/CLOCKS_PER_SEC);
 
-	print(h_A, rowsA, colsA);
-	print(h_B, rowsB, colsB);
-	print(h_R, rowsA, colsB);
+	//print(h_A, rowsA, colsA);
+	//print(h_B, rowsB, colsB);
+	//print(h_R, rowsA, colsB);
 
 
 	free(h_A);
