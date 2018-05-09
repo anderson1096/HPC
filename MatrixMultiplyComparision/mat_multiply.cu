@@ -96,6 +96,7 @@ int main(int argc, char** argv)
 
 	float *h_A, *h_B, *h_R;
 	int rowsA, rowsB, colsA, colsB;
+	clock_t start, end;
 
 	rowsA = 100;
 	rowsB = 100;
@@ -162,9 +163,13 @@ int main(int argc, char** argv)
 	dim3 dimGrid(32, 32, 1);
 	dim3 dimBlock(blockSize, blockSize, 1);
 
+	start = clock();
 	MatrixMultiplySMKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, colsA, rowsA, colsB, rowsB);
 	cudaMemcpy(h_R, d_R, sizeR, cudaMemcpyDeviceToHost);
 
+	end = clock();
+
+	printf("Tiempo: %.6f\n", (double)(end - start)/CLOCKS_PER_SEC);
 	print(h_A, rowsA, colsA);
 	print(h_B, rowsB, colsB);
 	print(h_R, rowsA, colsB);
