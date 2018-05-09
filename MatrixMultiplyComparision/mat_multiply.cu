@@ -5,7 +5,7 @@
 #define TILE_WIDTH 2
 
 __host__
-void fill_vector(float* M , int row , int col){
+void fill_matrix(float* M , int row , int col){
 	for (int i = 0; i < row; ++i){
 		for (int j = 0; j < col; ++j)
 		{
@@ -89,25 +89,26 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 int main(int argc, char** argv)
 {
 
-	if (argc != 3){
+	/*if (argc != 3){
 		printf("Debe añadir los nombres de los archivos\n");
 		return 1;
-	}
+	}*/
 
 	float *h_A, *h_B, *h_R;
-	int rowsA, rowsB, colsA, colsB;
+	int rowsA, rowsB, colsA, colsB = 100;
+
 
 
 	cudaError_t error = cudaSuccess;
 
-	FILE *file_1, *file_2;
-	file_1 = fopen(argv[1], "r");
-	file_2 = fopen(argv[2], "r");
+	//FILE *file_1, *file_2;
+	//file_1 = fopen(argv[1], "r");
+	//file_2 = fopen(argv[2], "r");
 
-	fscanf(file_1, "%d", &rowsA);
-	fscanf(file_1, "%d", &colsA);
-	fscanf(file_2, "%d", &rowsB);
-	fscanf(file_2, "%d", &colsB);
+	//fscanf(file_1, "%d", &rowsA);
+	//fscanf(file_1, "%d", &colsA);
+	//fscanf(file_2, "%d", &rowsB);
+	//fscanf(file_2, "%d", &colsB);
 
 	if (colsA != rowsB){
 		printf("Es imposible multiplicar las matrices\n");
@@ -123,8 +124,11 @@ int main(int argc, char** argv)
 	h_B = (float*)malloc(sizeB);
 	h_R = (float*)malloc(sizeR);
 
-	read(h_A, file_1, rowsA, colsA);
-	read(h_B, file_2, rowsB, colsB);
+	//read(h_A, file_1, rowsA, colsA);
+	//read(h_B, file_2, rowsB, colsB);
+
+	fill_vector(*h_A, rowsA, colsA)
+	fill_vector(*h_B, rowsB, colsB)
 
 	float *d_A, *d_B, *d_R;
 
