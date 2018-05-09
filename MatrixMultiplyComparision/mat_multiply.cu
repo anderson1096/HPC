@@ -70,9 +70,7 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 	}
 
 	if(row < rowsA && col < colsB){
-		printf("Pvalue: %.f Thread ID: %d\n", Pvalue, tx);
 		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
-		printf("valor: %f", d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx]);
 	}
 	return;
 }
@@ -146,6 +144,7 @@ int main(int argc, char** argv)
 	dim3 dimBlock(blockSize, blockSize, 1);
 
 	MatrixMultiplySMKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, colsA, rowsA, colsB, rowsB);
+	print(d_R, rowsA, colsB);
 	cudaMemcpy(h_R, d_R, sizeR, cudaMemcpyDeviceToHost);
 
 	print(h_A, rowsA, colsA);
