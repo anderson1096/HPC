@@ -48,6 +48,7 @@ void MatrixMultiplyKernel(float *d_A, float *d_B, float *d_R, int colsA, int row
 
 int main(int argc, char** argv)
 {
+	clock_t start, end;
 
 	if (argc != 3){
 		printf("Debe añadir los nombres de los archivos\n");
@@ -88,6 +89,8 @@ int main(int argc, char** argv)
 
 	float *d_A, *d_B, *d_R;
 
+	start = clock();
+
 	error = cudaMalloc((void**)&d_A, sizeA);
 	if (error != cudaSuccess){
 		printf("Error solicitando memoria para d_A \n");
@@ -115,6 +118,9 @@ int main(int argc, char** argv)
 
 	MatrixMultiplyKernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_R, colsA, rowsA, colsB, rowsB);
 	cudaMemcpy(h_R, d_R, sizeR, cudaMemcpyDeviceToHost);
+
+	end = clock();
+	printf("Tiempo : %.6f\n", (double)(end - start)/CLOCKS_PER_SEC);
 
 	print(h_A, rowsA, colsA);
 	print(h_B, rowsB, colsB);
