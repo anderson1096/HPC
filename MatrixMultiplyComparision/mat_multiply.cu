@@ -9,7 +9,7 @@ void fill_matrix(float* M , int row , int col){
 	for (int i = 0; i < row; ++i){
 		for (int j = 0; j < col; ++j)
 		{
-			matrix[i*col + j] = 2.0;
+			M[i*col + j] = 2.0;
 		}
 	}
 }
@@ -127,8 +127,8 @@ int main(int argc, char** argv)
 	//read(h_A, file_1, rowsA, colsA);
 	//read(h_B, file_2, rowsB, colsB);
 
-	fill_vector(*h_A, rowsA, colsA)
-	fill_vector(*h_B, rowsB, colsB)
+	fill_matrix(*h_A, rowsA, colsA)
+	fill_matrix(*h_B, rowsB, colsB)
 
 	float *d_A, *d_B, *d_R;
 
