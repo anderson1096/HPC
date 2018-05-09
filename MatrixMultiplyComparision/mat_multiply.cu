@@ -38,14 +38,13 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 
 	int bx = blockIdx.x; int by = blockIdx.y;
 	int tx = threadIdx.x; int ty = threadIdx.y;
-	int gx = gridDim.x; int gy = gridDim.y;
+
 
 	int col = bx * TILE_WIDTH + tx;
 	int row = by * TILE_WIDTH + ty;
 
 	float Pvalue = 0;
-	int m = 0, n = 0;
-	while( m < gx && n < gy){
+	for (int m = 0; m < (TILE_WIDTH + colsA - 1)/TILE_WIDTH; ++m){
 
 		if(m * TILE_WIDTH + tx < colsA && row < rowsA){
 			Ads[ty][tx] = d_A[row * colsA + m * TILE_WIDTH + tx];
@@ -54,15 +53,12 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 			Ads[ty][tx] = 0.0;
 		}
 
-		if(n * TILE_WIDTH + ty < rowsB && col < colsB){
-			Bds[ty][tx] = d_B[(n * TILE_WIDTH + ty) * colsB + col];
+		if(m * TILE_WIDTH + ty < rowsB && col < colsB){
+			Bds[ty][tx] = d_B[(m * TILE_WIDTH + ty) * colsB + col];
 		}
 		else{
 			Bds[ty][tx] = 0.0;
 		}
-
-		m++;
-		n++;
 
 		__syncthreads();
 
