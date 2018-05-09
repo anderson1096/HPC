@@ -98,8 +98,8 @@ int main(int argc, char** argv)
 	int rowsA, rowsB, colsA, colsB;
 
 	rowsA = 10;
-	rowsB = 10;
-	colsA = 10;
+	rowsB = 7;
+	colsA = 7;
 	colsB = 10;
 
 
