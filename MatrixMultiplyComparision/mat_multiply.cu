@@ -67,11 +67,11 @@ void MatrixMultiplySMKernel(float *d_A, float *d_B, float *d_R, int colsA, int r
 		}
 
 		__syncthreads();
-		printf("Pvalue: %f\n", Pvalue);
+
 	}
 
 	if(row < rowsA && col < colsB){
-		d_R[((by * blockDim.y + ty) * colsB) + (bx * blockDim.x) + tx] = Pvalue;
+		d_R[(row * colsB) + col] = Pvalue;
 	}
 
 
