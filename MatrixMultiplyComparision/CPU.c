@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 100
+#define N 1000
+#define M 2000
 
 
 void fill_matrix(float *M, int row, int col){
@@ -71,7 +72,7 @@ void save(float *M, int row, int col){
 }
 
 int main() {
-  int row_A = N, row_B = N, col_A = N, col_B = N;
+  int row_A = N, row_B = M, col_A = M, col_B = N;
   clock_t start, end;
 
   /*printf("Digite el numero de filas matriz A: \n");

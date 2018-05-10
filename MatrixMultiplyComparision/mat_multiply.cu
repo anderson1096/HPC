@@ -98,10 +98,10 @@ int main(int argc, char** argv)
 	int rowsA, rowsB, colsA, colsB;
 	clock_t start, end;
 
-	rowsA = 100;
-	rowsB = 100;
-	colsA = 100;
-	colsB = 100;
+	rowsA = 1000;
+	rowsB = 2000;
+	colsA = 2000;
+	colsB = 1000;
 
 
 

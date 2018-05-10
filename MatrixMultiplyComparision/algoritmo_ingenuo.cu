@@ -67,10 +67,10 @@ int main(int argc, char** argv)
 	float *h_A, *h_B, *h_R;
 	int rowsA, rowsB, colsA, colsB;
 
-	rowsA = 100;
-	rowsB = 100;
-	colsA = 100;
-	colsB = 100;
+	rowsA = 1000;
+	rowsB = 2000;
+	colsA = 2000;
+	colsB = 1000;
 
 	cudaError_t error = cudaSuccess;
 
